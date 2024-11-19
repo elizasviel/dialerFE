@@ -10,12 +10,6 @@ interface Business {
   hasDiscount: boolean;
 }
 
-interface PreviewData {
-  name: string;
-  phone: string;
-  hasDiscount: string;
-}
-
 function App() {
   const [status, setStatus] = useState<{
     message: string;
@@ -25,7 +19,6 @@ function App() {
     type: "",
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [preview, setPreview] = useState<PreviewData[]>([]);
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 

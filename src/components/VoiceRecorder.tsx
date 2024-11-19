@@ -23,6 +23,7 @@ export function VoiceRecorder({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const audioRef = useRef<Blob | null>(null);
+  const [filename, setFilename] = useState("recording.mp3");
 
   const startRecording = async () => {
     try {
@@ -74,7 +75,8 @@ export function VoiceRecorder({
     setIsSaving(true);
     try {
       const formData = new FormData();
-      formData.append("file", audioRef.current, "recording.wav");
+      formData.append("file", audioRef.current, filename);
+      formData.append("filename", filename);
 
       const response = await fetch(
         "http://localhost:3000/api/upload-recording",
@@ -115,13 +117,22 @@ export function VoiceRecorder({
           </button>
         )}
         {audioUrl && !isRecording && (
-          <button
-            onClick={handleSaveRecording}
-            className={styles.saveButton}
-            disabled={isSaving}
-          >
-            {isSaving ? "Uploading..." : "Upload Recording"}
-          </button>
+          <div className={styles.saveControls}>
+            <input
+              type="text"
+              value={filename}
+              onChange={(e) => setFilename(e.target.value)}
+              placeholder="Enter filename"
+              className={styles.filenameInput}
+            />
+            <button
+              onClick={handleSaveRecording}
+              className={styles.saveButton}
+              disabled={isSaving}
+            >
+              {isSaving ? "Uploading..." : "Upload Recording"}
+            </button>
+          </div>
         )}
       </div>
       {status.message && (

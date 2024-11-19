@@ -2,15 +2,23 @@ import { useState, useEffect } from "react";
 import styles from "./AssetManager.module.css";
 
 interface Asset {
-  sid: string;
-  friendlyName: string;
-  dateCreated: string;
+  key: string;
+  url: string;
+  lastModified: string;
+  filename: string;
+}
+
+interface Status {
+  message: string;
+  type: "success" | "error";
 }
 
 export function AssetManager() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [status, setStatus] = useState<Status | null>(null);
 
   const fetchAssets = async () => {
     setIsLoading(true);
@@ -28,24 +36,48 @@ export function AssetManager() {
     }
   };
 
-  const handleDelete = async (assetSid: string) => {
-    if (!window.confirm("Are you sure you want to delete this asset?")) {
+  const handleDelete = async (key: string) => {
+    if (!window.confirm("Are you sure you want to delete this recording?")) {
       return;
     }
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/assets/${assetSid}`,
+        `http://localhost:3000/api/assets/${encodeURIComponent(key)}`,
         { method: "DELETE" }
       );
-      if (!response.ok) throw new Error("Failed to delete asset");
+      if (!response.ok) throw new Error("Failed to delete recording");
 
       // Remove the deleted asset from the list
-      setAssets(assets.filter((asset) => asset.sid !== assetSid));
+      setAssets(assets.filter((asset) => asset.key !== key));
     } catch (error) {
       setError(
-        error instanceof Error ? error.message : "Failed to delete asset"
+        error instanceof Error ? error.message : "Failed to delete recording"
       );
+    }
+  };
+
+  const handleSetActive = async (key: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/assets/set-active/${encodeURIComponent(
+          key
+        )}`,
+        {
+          method: "POST",
+        }
+      );
+      if (!response.ok) throw new Error("Failed to set active recording");
+
+      setActiveKey(key);
+      setStatus({ message: "Active recording updated", type: "success" });
+    } catch (error) {
+      setError(
+        error instanceof Error
+          ? error.message
+          : "Failed to set active recording"
+      );
+      setStatus({ message: "Failed to set active recording", type: "error" });
     }
   };
 
@@ -70,9 +102,14 @@ export function AssetManager() {
 
   return (
     <div className={styles.container}>
-      <h2>Twilio Assets</h2>
+      <h2>Recordings</h2>
+      {status && (
+        <div className={`${styles.status} ${styles[status.type]}`}>
+          {status.message}
+        </div>
+      )}
       {assets.length === 0 ? (
-        <p>No assets found</p>
+        <p>No recordings found</p>
       ) : (
         <table className={styles.table}>
           <thead>
@@ -84,12 +121,21 @@ export function AssetManager() {
           </thead>
           <tbody>
             {assets.map((asset) => (
-              <tr key={asset.sid}>
-                <td>{asset.friendlyName}</td>
-                <td>{new Date(asset.dateCreated).toLocaleString()}</td>
+              <tr
+                key={asset.key}
+                className={asset.key === activeKey ? styles.active : ""}
+              >
+                <td>{asset.filename}</td>
+                <td>{new Date(asset.lastModified).toLocaleString()}</td>
                 <td>
                   <button
-                    onClick={() => handleDelete(asset.sid)}
+                    onClick={() => handleSetActive(asset.key)}
+                    className={styles.setActiveButton}
+                  >
+                    Set Active
+                  </button>
+                  <button
+                    onClick={() => handleDelete(asset.key)}
                     className={styles.deleteButton}
                   >
                     Delete
