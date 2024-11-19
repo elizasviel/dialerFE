@@ -3,13 +3,26 @@ import styles from "./VoiceRecorder.module.css";
 
 interface VoiceRecorderProps {
   onRecordingComplete: (audioBlob: Blob) => void;
+  onUploadSuccess?: () => void;
 }
 
-export function VoiceRecorder({ onRecordingComplete }: VoiceRecorderProps) {
+export function VoiceRecorder({
+  onRecordingComplete,
+  onUploadSuccess,
+}: VoiceRecorderProps) {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [status, setStatus] = useState<{
+    message: string;
+    type: "success" | "error" | "";
+  }>({
+    message: "",
+    type: "",
+  });
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const audioRef = useRef<Blob | null>(null);
 
   const startRecording = async () => {
     try {
@@ -26,16 +39,19 @@ export function VoiceRecorder({ onRecordingComplete }: VoiceRecorderProps) {
         const audioBlob = new Blob(chunksRef.current, { type: "audio/wav" });
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioUrl(audioUrl);
-        onRecordingComplete(audioBlob);
+        audioRef.current = audioBlob;
       };
 
       mediaRecorder.start();
       setIsRecording(true);
+      setStatus({ message: "", type: "" });
     } catch (error) {
       console.error("Error accessing microphone:", error);
-      alert(
-        "Error accessing microphone. Please ensure you have granted permission."
-      );
+      setStatus({
+        message:
+          "Error accessing microphone. Please ensure you have granted permission.",
+        type: "error",
+      });
     }
   };
 
@@ -46,6 +62,43 @@ export function VoiceRecorder({ onRecordingComplete }: VoiceRecorderProps) {
         .getTracks()
         .forEach((track) => track.stop());
       setIsRecording(false);
+    }
+  };
+
+  const handleSaveRecording = async () => {
+    if (!audioRef.current) {
+      setStatus({ message: "No recording to save", type: "error" });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", audioRef.current, "recording.wav");
+
+      const response = await fetch(
+        "http://localhost:3000/api/upload-recording",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save recording");
+      }
+
+      setStatus({ message: "Recording saved successfully!", type: "success" });
+      onRecordingComplete(audioRef.current);
+      onUploadSuccess?.();
+    } catch (error) {
+      setStatus({
+        message:
+          error instanceof Error ? error.message : "Failed to save recording",
+        type: "error",
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -61,7 +114,21 @@ export function VoiceRecorder({ onRecordingComplete }: VoiceRecorderProps) {
             Stop Recording
           </button>
         )}
+        {audioUrl && !isRecording && (
+          <button
+            onClick={handleSaveRecording}
+            className={styles.saveButton}
+            disabled={isSaving}
+          >
+            {isSaving ? "Uploading..." : "Upload Recording"}
+          </button>
+        )}
       </div>
+      {status.message && (
+        <div className={`${styles.status} ${styles[status.type]}`}>
+          {status.message}
+        </div>
+      )}
       {audioUrl && (
         <div className={styles.preview}>
           <audio src={audioUrl} controls />

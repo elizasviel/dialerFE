@@ -1,111 +1,145 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  padding: 2rem;
+}
+
 .container {
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
+  background-color: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #eaeaea;
+}
+
+.header h1 {
+  color: #2d3748;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.mainContent {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.leftColumn {
+  padding-right: 2rem;
+  border-right: 1px solid #eaeaea;
+}
+
+.rightColumn {
+  padding-left: 1rem;
 }
 
 .uploadSection {
-  margin: 20px 0;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+}
+
+.uploadControls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .status {
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 4px;
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 6px;
 }
 
 .success {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #d1fae5;
+  color: #065f46;
 }
 
 .error {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 .businessList {
-  margin-top: 30px;
+  margin-top: 2rem;
+}
+
+.businessList h2 {
+  color: #2d3748;
+  margin-bottom: 1rem;
 }
 
 table {
   width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 1rem;
 }
 
 th,
 td {
-  padding: 12px;
+  padding: 1rem;
   text-align: left;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eaeaea;
 }
 
 th {
-  background-color: #f8f9fa;
-  font-weight: bold;
+  background-color: #f8fafc;
+  font-weight: 600;
+  color: #4a5568;
 }
 
 tr:hover {
-  background-color: #f5f5f5;
-}
-
-.clearButton {
-  margin-left: 10px;
-  padding: 8px 16px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.clearButton:hover {
-  background-color: #c82333;
-}
-
-.clearButton:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
+  background-color: #f8fafc;
 }
 
 button {
-  padding: 8px 16px;
-  margin: 0 8px;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
-  background-color: #007bff;
-  color: white;
+  border-radius: 6px;
+  font-weight: 500;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.clearButton {
+  background-color: #ef4444;
+  color: white;
 }
 
-button:hover:not(:disabled) {
-  background-color: #0056b3;
+.clearButton:hover {
+  background-color: #dc2626;
+}
+
+.exportButton {
+  background-color: #10b981;
+  color: white;
+}
+
+.exportButton:hover {
+  background-color: #059669;
 }
 
 .callButton {
-  margin-left: 10px;
-  padding: 8px 16px;
-  background-color: #007bff;
+  background-color: #3b82f6;
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
 }
 
 .callButton:hover {
-  background-color: #0056b3;
+  background-color: #2563eb;
 }
 
-.callButton:disabled {
-  background-color: #6c757d;
+button:disabled {
+  background-color: #9ca3af;
   cursor: not-allowed;
 }
