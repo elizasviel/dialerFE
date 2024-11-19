@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./App.module.css";
-import { VoiceRecorder } from "./components/VoiceRecorder";
-import { AssetManager } from "./components/AssetManager";
 
 interface Business {
   id: string;
   name: string;
   phone: string;
   hasDiscount: boolean;
+  discountAmount?: string;
+  discountDetails?: string;
+  lastCalled?: string;
+  callStatus?: string;
 }
 
 function App() {
@@ -71,7 +73,7 @@ function App() {
       }
 
       setStatus({ message: "Upload successful!", type: "success" });
-      fetchBusinesses(); // Refresh the list after upload
+      fetchBusinesses();
     } catch (error) {
       setStatus({
         message: error instanceof Error ? error.message : "Upload failed",
@@ -101,7 +103,7 @@ function App() {
       }
 
       setStatus({ message: "Database cleared successfully!", type: "success" });
-      setBusinesses([]); // Clear the local state
+      setBusinesses([]);
     } catch (error) {
       setStatus({
         message:
@@ -118,20 +120,15 @@ function App() {
       const response = await fetch("http://localhost:3000/api/export-csv");
       if (!response.ok) throw new Error("Export failed");
 
-      // Get the blob from the response
       const blob = await response.blob();
-
-      // Create a download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = "businesses.csv";
 
-      // Trigger the download
       document.body.appendChild(a);
       a.click();
 
-      // Cleanup
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch (error) {
@@ -153,12 +150,13 @@ function App() {
         method: "POST",
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to initiate calls");
-      }
+      if (!response.ok) throw new Error("Failed to initiate calls");
 
       const data = await response.json();
-      setStatus({ message: data.message, type: "success" });
+      setStatus({
+        message: data.message,
+        type: "success",
+      });
     } catch (error) {
       setStatus({
         message:
@@ -174,86 +172,70 @@ function App() {
     <div className={styles.pageContainer}>
       <div className={styles.container}>
         <header className={styles.header}>
-          <h1>Business Call Manager</h1>
+          <h1>Business Manager</h1>
         </header>
 
         <div className={styles.mainContent}>
-          <div className={styles.leftColumn}>
-            <div className={styles.uploadSection}>
-              <h2>Upload Business Data</h2>
-              <div className={styles.uploadControls}>
-                <input
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileUpload}
-                  ref={fileInputRef}
-                  disabled={isLoading}
-                />
-                <button
-                  onClick={handleExport}
-                  disabled={isLoading || businesses.length === 0}
-                  className={styles.exportButton}
-                >
-                  Export CSV
-                </button>
-                <button
-                  onClick={handleClearDatabase}
-                  disabled={isLoading}
-                  className={styles.clearButton}
-                >
-                  Clear Database
-                </button>
-                <button
-                  onClick={handleCallAll}
-                  disabled={isLoading || businesses.length === 0}
-                  className={styles.callButton}
-                >
-                  Call All Businesses
-                </button>
+          <div className={styles.uploadSection}>
+            <h2>Upload Business Data</h2>
+            <div className={styles.uploadControls}>
+              <input
+                type="file"
+                accept=".csv"
+                onChange={handleFileUpload}
+                ref={fileInputRef}
+                disabled={isLoading}
+              />
+              <button
+                onClick={handleExport}
+                disabled={isLoading || businesses.length === 0}
+                className={styles.exportButton}
+              >
+                Export CSV
+              </button>
+              <button
+                onClick={handleClearDatabase}
+                disabled={isLoading}
+                className={styles.clearButton}
+              >
+                Clear Database
+              </button>
+              <button
+                onClick={handleCallAll}
+                disabled={isLoading || businesses.length === 0}
+                className={styles.callButton}
+              >
+                Call All Businesses
+              </button>
+            </div>
+            {isLoading && <div>Processing...</div>}
+            {status.message && (
+              <div className={`${styles.status} ${styles[status.type]}`}>
+                {status.message}
               </div>
-              {isLoading && <div>Processing...</div>}
-              {status.message && (
-                <div className={`${styles.status} ${styles[status.type]}`}>
-                  {status.message}
-                </div>
-              )}
-            </div>
-
-            <div className={styles.businessList}>
-              <h2>Businesses</h2>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Phone</th>
-                    <th>Has Discount</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {businesses.map((business) => (
-                    <tr key={business.id}>
-                      <td>{business.name}</td>
-                      <td>{business.phone}</td>
-                      <td>{business.hasDiscount ? "Yes" : "No"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            )}
           </div>
 
-          <div className={styles.rightColumn}>
-            <h2>Voice Message Settings</h2>
-            <VoiceRecorder
-              onRecordingComplete={(blob) => {
-                console.log("Recording saved:", blob);
-              }}
-              onUploadSuccess={() => {
-                const event = new Event("assetUploaded");
-                window.dispatchEvent(event);
-              }}
-            />
-            <AssetManager />
+          <div className={styles.businessList}>
+            <h2>Businesses</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Has Discount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {businesses.map((business) => (
+                  <tr key={business.id}>
+                    <td>{business.name}</td>
+                    <td>{business.phone}</td>
+                    <td>{business.hasDiscount ? "Yes" : "No"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

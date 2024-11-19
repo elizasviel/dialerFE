@@ -26,18 +26,7 @@
 }
 
 .mainContent {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-}
-
-.leftColumn {
-  padding-right: 2rem;
-  border-right: 1px solid #eaeaea;
-}
-
-.rightColumn {
-  padding-left: 1rem;
+  width: 100%;
 }
 
 .uploadSection {
