@@ -38,7 +38,9 @@ function App() {
 
   const fetchBusinesses = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/businesses");
+      const response = await fetch(
+        "https://dialerbackend-f07ad367d080.herokuapp.com/api/businesses"
+      );
       if (!response.ok) throw new Error("Failed to fetch businesses");
       const data = await response.json();
       setBusinesses(data);
@@ -62,10 +64,13 @@ function App() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:3000/api/upload-csv", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://dialerbackend-f07ad367d080.herokuapp.com/api/upload-csv",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       const data = await response.json();
 
       if (!response.ok) {
@@ -94,9 +99,12 @@ function App() {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/clear-database", {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        "https://dialerbackend-f07ad367d080.herokuapp.com/api/clear-database",
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to clear database");
@@ -117,7 +125,9 @@ function App() {
 
   const handleExport = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/export-csv");
+      const response = await fetch(
+        "https://dialerbackend-f07ad367d080.herokuapp.com/api/export-csv"
+      );
       if (!response.ok) throw new Error("Export failed");
 
       const blob = await response.blob();
@@ -146,9 +156,12 @@ function App() {
 
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/call-all", {
-        method: "POST",
-      });
+      const response = await fetch(
+        "https://dialerbackend-f07ad367d080.herokuapp.com/api/call-all",
+        {
+          method: "POST",
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to initiate calls");
 

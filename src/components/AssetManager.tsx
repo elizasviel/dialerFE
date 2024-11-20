@@ -23,7 +23,9 @@ export function AssetManager() {
   const fetchAssets = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("http://localhost:3000/api/assets");
+      const response = await fetch(
+        "https://dialerbackend-f07ad367d080.herokuapp.com/api/assets"
+      );
       if (!response.ok) throw new Error("Failed to fetch assets");
       const data = await response.json();
       setAssets(data);
@@ -43,7 +45,9 @@ export function AssetManager() {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/assets/${encodeURIComponent(key)}`,
+        `https://dialerbackend-f07ad367d080.herokuapp.com/api/assets/${encodeURIComponent(
+          key
+        )}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Failed to delete recording");
@@ -60,7 +64,7 @@ export function AssetManager() {
   const handleSetActive = async (key: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/assets/set-active/${encodeURIComponent(
+        `https://dialerbackend-f07ad367d080.herokuapp.com/api/assets/set-active/${encodeURIComponent(
           key
         )}`,
         {
