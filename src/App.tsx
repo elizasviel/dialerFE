@@ -223,7 +223,11 @@ function App() {
                 <tr>
                   <th>Name</th>
                   <th>Phone</th>
-                  <th>Has Discount</th>
+                  <th>Discount Status</th>
+                  <th>Discount Amount</th>
+                  <th>Details</th>
+                  <th>Last Called</th>
+                  <th>Call Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -232,6 +236,14 @@ function App() {
                     <td>{business.name}</td>
                     <td>{business.phone}</td>
                     <td>{business.hasDiscount ? "Yes" : "No"}</td>
+                    <td>{business.discountAmount || "-"}</td>
+                    <td>{business.discountDetails || "-"}</td>
+                    <td>
+                      {business.lastCalled
+                        ? new Date(business.lastCalled).toLocaleDateString()
+                        : "-"}
+                    </td>
+                    <td>{business.callStatus || "Not Called"}</td>
                   </tr>
                 ))}
               </tbody>
