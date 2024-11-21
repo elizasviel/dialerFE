@@ -6,7 +6,7 @@ interface TwilioAccount {
   status: string;
   type: string;
   phoneNumber: string;
-  remainingBalance: number;
+  remainingBalance: number | null;
 }
 
 export function TwilioInfo() {
@@ -60,7 +60,11 @@ export function TwilioInfo() {
         </div>
         <div className={styles.infoItem}>
           <label>Balance:</label>
-          <span>${accountInfo.remainingBalance.toFixed(2)}</span>
+          <span>
+            {accountInfo.remainingBalance !== null
+              ? `$${accountInfo.remainingBalance.toFixed(2)}`
+              : "Not available"}
+          </span>
         </div>
       </div>
     </div>
