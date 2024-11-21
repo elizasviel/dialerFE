@@ -9,7 +9,7 @@ interface Business {
   discountAmount?: string;
   discountDetails?: string;
   lastCalled?: string;
-  callStatus?: string;
+  callStatus?: "pending" | "completed" | "failed" | "calling";
 }
 
 function App() {
@@ -290,7 +290,11 @@ function App() {
                         ? new Date(business.lastCalled).toLocaleDateString()
                         : "-"}
                     </td>
-                    <td>{business.callStatus || "Not Called"}</td>
+                    <td className={styles[business.callStatus || "pending"]}>
+                      {business.callStatus === "calling"
+                        ? "Calling..."
+                        : business.callStatus || "Not Called"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
