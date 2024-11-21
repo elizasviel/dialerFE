@@ -51,6 +51,24 @@ function App() {
 
   useEffect(() => {
     fetchBusinesses();
+
+    // Set up SSE connection
+    const eventSource = new EventSource(
+      "https://dialerbackend-f07ad367d080.herokuapp.com/api/business-updates"
+    );
+
+    eventSource.onmessage = (event) => {
+      const updatedBusiness = JSON.parse(event.data);
+      setBusinesses((prevBusinesses) =>
+        prevBusinesses.map((business) =>
+          business.id === updatedBusiness.id ? updatedBusiness : business
+        )
+      );
+    };
+
+    return () => {
+      eventSource.close();
+    };
   }, []);
 
   const handleFileUpload = async (
