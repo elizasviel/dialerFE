@@ -1,0 +1,51 @@
+.container {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.infoItem label {
+  font-weight: 500;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.infoItem span {
+  font-size: 1.1rem;
+  color: #2d3748;
+}
+
+.error {
+  color: #dc2626;
+  background-color: #fee2e2;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.active {
+  color: #059669;
+}
+
+.suspended {
+  color: #dc2626;
+}
+
+.inactive {
+  color: #9ca3af;
+}

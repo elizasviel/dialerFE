@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./App.module.css";
+import { TwilioInfo } from "./components/TwilioInfo";
 
 interface Business {
   id: string;
@@ -223,6 +224,7 @@ function App() {
         </header>
 
         <div className={styles.mainContent}>
+          <TwilioInfo />
           <div className={styles.uploadSection}>
             <h2>Upload Business Data</h2>
             <div className={styles.uploadControls}>
