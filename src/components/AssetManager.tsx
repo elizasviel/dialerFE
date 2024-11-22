@@ -52,12 +52,14 @@ export function AssetManager() {
       );
       if (!response.ok) throw new Error("Failed to delete recording");
 
-      // Remove the deleted asset from the list
       setAssets(assets.filter((asset) => asset.key !== key));
+      setStatus({ message: "Recording deleted successfully", type: "success" });
     } catch (error) {
-      setError(
-        error instanceof Error ? error.message : "Failed to delete recording"
-      );
+      setStatus({
+        message:
+          error instanceof Error ? error.message : "Failed to delete recording",
+        type: "error",
+      });
     }
   };
 
@@ -76,26 +78,25 @@ export function AssetManager() {
       setActiveKey(key);
       setStatus({ message: "Active recording updated", type: "success" });
     } catch (error) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to set active recording"
-      );
-      setStatus({ message: "Failed to set active recording", type: "error" });
+      setStatus({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to set active recording",
+        type: "error",
+      });
     }
   };
 
   useEffect(() => {
     fetchAssets();
 
-    // Add event listener for asset uploads
     const handleAssetUpload = () => {
       fetchAssets();
     };
 
     window.addEventListener("assetUploaded", handleAssetUpload);
 
-    // Cleanup
     return () => {
       window.removeEventListener("assetUploaded", handleAssetUpload);
     };
@@ -106,7 +107,7 @@ export function AssetManager() {
 
   return (
     <div className={styles.container}>
-      <h2>Recordings</h2>
+      <h2>Voice Recordings</h2>
       {status && (
         <div className={`${styles.status} ${styles[status.type]}`}>
           {status.message}
@@ -128,7 +129,7 @@ export function AssetManager() {
               message: "Standard recordings generated successfully",
               type: "success",
             });
-            fetchAssets(); // Refresh the asset list
+            fetchAssets();
           } catch (error) {
             setStatus({
               message:

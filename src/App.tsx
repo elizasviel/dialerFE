@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./App.module.css";
 import { TwilioInfo } from "./components/TwilioInfo";
+import { AssetManager } from "./components/AssetManager";
 
 interface Business {
   id: string;
@@ -233,6 +234,7 @@ function App() {
 
         <div className={styles.mainContent}>
           <TwilioInfo />
+          <AssetManager />
           <div className={styles.uploadSection}>
             <h2>Upload Business Data</h2>
             <div className={styles.uploadControls}>
