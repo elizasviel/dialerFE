@@ -112,6 +112,40 @@ export function AssetManager() {
           {status.message}
         </div>
       )}
+      <button
+        onClick={async () => {
+          try {
+            setIsLoading(true);
+            const response = await fetch(
+              "https://dialerbackend-f07ad367d080.herokuapp.com/api/generate-recordings",
+              {
+                method: "POST",
+              }
+            );
+            if (!response.ok) throw new Error("Failed to generate recordings");
+
+            setStatus({
+              message: "Standard recordings generated successfully",
+              type: "success",
+            });
+            fetchAssets(); // Refresh the asset list
+          } catch (error) {
+            setStatus({
+              message:
+                error instanceof Error
+                  ? error.message
+                  : "Failed to generate recordings",
+              type: "error",
+            });
+          } finally {
+            setIsLoading(false);
+          }
+        }}
+        className={styles.generateButton}
+        disabled={isLoading}
+      >
+        Generate Standard Recordings
+      </button>
       {assets.length === 0 ? (
         <p>No recordings found</p>
       ) : (
