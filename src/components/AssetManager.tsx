@@ -17,7 +17,6 @@ export function AssetManager() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [activeKey, setActiveKey] = useState<string | null>(null);
   const [status, setStatus] = useState<Status | null>(null);
 
   const fetchAssets = async () => {
@@ -58,31 +57,6 @@ export function AssetManager() {
       setStatus({
         message:
           error instanceof Error ? error.message : "Failed to delete recording",
-        type: "error",
-      });
-    }
-  };
-
-  const handleSetActive = async (key: string) => {
-    try {
-      const response = await fetch(
-        `https://dialerbackend-f07ad367d080.herokuapp.com/api/assets/set-active/${encodeURIComponent(
-          key
-        )}`,
-        {
-          method: "POST",
-        }
-      );
-      if (!response.ok) throw new Error("Failed to set active recording");
-
-      setActiveKey(key);
-      setStatus({ message: "Active recording updated", type: "success" });
-    } catch (error) {
-      setStatus({
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to set active recording",
         type: "error",
       });
     }
@@ -160,19 +134,10 @@ export function AssetManager() {
           </thead>
           <tbody>
             {assets.map((asset) => (
-              <tr
-                key={asset.key}
-                className={asset.key === activeKey ? styles.active : ""}
-              >
+              <tr key={asset.key}>
                 <td>{asset.filename}</td>
                 <td>{new Date(asset.lastModified).toLocaleString()}</td>
                 <td>
-                  <button
-                    onClick={() => handleSetActive(asset.key)}
-                    className={styles.setActiveButton}
-                  >
-                    Set Active
-                  </button>
                   <button
                     onClick={() => handleDelete(asset.key)}
                     className={styles.deleteButton}
