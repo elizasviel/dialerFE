@@ -9,8 +9,16 @@ interface Business {
   hasDiscount: boolean;
   discountAmount?: string;
   discountDetails?: string;
+  availabilityInfo?: string;
+  eligibilityInfo?: string;
   lastCalled?: string;
-  callStatus?: "pending" | "completed" | "failed" | "calling";
+  callStatus?:
+    | "pending"
+    | "completed"
+    | "failed"
+    | "rejected"
+    | "in-progress"
+    | "calling";
 }
 
 function App() {
